@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.lab.mapper.DeviceMapper">
+
+    <resultMap type="Device" id="DeviceResult">
+        <result property="dvId"    column="dv_id"    />
+        <result property="dvSort"    column="dv_sort"    />
+        <result property="dvTitle"    column="dv_title"    />
+        <result property="dvType"    column="dv_type"    />
+        <result property="dvSpecification"    column="dv_specification"    />
+        <result property="dvPrice"    column="dv_price"    />
+        <result property="dvNumber"    column="dv_number"    />
+        <result property="dvPurchaseDate"    column="dv_purchase_date"    />
+        <result property="dvProducer"    column="dv_producer"    />
+        <result property="dvManager"    column="dv_manager"    />
+        <result property="dvStatus"    column="dv_status"    />
+    </resultMap>
+
+    <sql id="selectDeviceVo">
+        select dv_id, dv_sort, dv_title, dv_type, dv_specification, dv_price, dv_number, dv_purchase_date, dv_producer, dv_manager, dv_status from device
+    </sql>
+
+    <select id="selectDeviceList" parameterType="Device" resultMap="DeviceResult">
+        <include refid="selectDeviceVo"/>
+        <where>
+            <if test="dvSort != null  and dvSort != ''"> and dv_sort = #{dvSort}</if>
+            <if test="dvTitle != null  and dvTitle != ''"> and dv_title = #{dvTitle}</if>
+            <if test="dvType != null  and dvType != ''"> and dv_type = #{dvType}</if>
+            <if test="dvSpecification != null  and dvSpecification != ''"> and dv_specification = #{dvSpecification}</if>
+            <if test="dvPrice != null "> and dv_price = #{dvPrice}</if>
+            <if test="dvNumber != null "> and dv_number = #{dvNumber}</if>
+            <if test="dvPurchaseDate != null "> and dv_purchase_date = #{dvPurchaseDate}</if>
+            <if test="dvProducer != null  and dvProducer != ''"> and dv_producer = #{dvProducer}</if>
+            <if test="dvManager != null "> and dv_manager = #{dvManager}</if>
+            <if test="dvStatus != null "> and dv_status = #{dvStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectDeviceByDvId" parameterType="Long" resultMap="DeviceResult">
+        <include refid="selectDeviceVo"/>
+        where dv_id = #{dvId}
+    </select>
+
+    <insert id="insertDevice" parameterType="Device" useGeneratedKeys="true" keyProperty="dvId">
+        insert into device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dvSort != null and dvSort != ''">dv_sort,</if>
+            <if test="dvTitle != null and dvTitle != ''">dv_title,</if>
+            <if test="dvType != null and dvType != ''">dv_type,</if>
+            <if test="dvSpecification != null">dv_specification,</if>
+            <if test="dvPrice != null">dv_price,</if>
+            <if test="dvNumber != null">dv_number,</if>
+            <if test="dvPurchaseDate != null">dv_purchase_date,</if>
+            <if test="dvProducer != null and dvProducer != ''">dv_producer,</if>
+            <if test="dvManager != null">dv_manager,</if>
+            <if test="dvStatus != null">dv_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dvSort != null and dvSort != ''">#{dvSort},</if>
+            <if test="dvTitle != null and dvTitle != ''">#{dvTitle},</if>
+            <if test="dvType != null and dvType != ''">#{dvType},</if>
+            <if test="dvSpecification != null">#{dvSpecification},</if>
+            <if test="dvPrice != null">#{dvPrice},</if>
+            <if test="dvNumber != null">#{dvNumber},</if>
+            <if test="dvPurchaseDate != null">#{dvPurchaseDate},</if>
+            <if test="dvProducer != null and dvProducer != ''">#{dvProducer},</if>
+            <if test="dvManager != null">#{dvManager},</if>
+            <if test="dvStatus != null">#{dvStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDevice" parameterType="Device">
+        update device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dvSort != null and dvSort != ''">dv_sort = #{dvSort},</if>
+            <if test="dvTitle != null and dvTitle != ''">dv_title = #{dvTitle},</if>
+            <if test="dvType != null and dvType != ''">dv_type = #{dvType},</if>
+            <if test="dvSpecification != null">dv_specification = #{dvSpecification},</if>
+            <if test="dvPrice != null">dv_price = #{dvPrice},</if>
+            <if test="dvNumber != null">dv_number = #{dvNumber},</if>
+            <if test="dvPurchaseDate != null">dv_purchase_date = #{dvPurchaseDate},</if>
+            <if test="dvProducer != null and dvProducer != ''">dv_producer = #{dvProducer},</if>
+            <if test="dvManager != null">dv_manager = #{dvManager},</if>
+            <if test="dvStatus != null">dv_status = #{dvStatus},</if>
+        </trim>
+        where dv_id = #{dvId}
+    </update>
+
+    <delete id="deleteDeviceByDvId" parameterType="Long">
+        delete from device where dv_id = #{dvId}
+    </delete>
+
+    <delete id="deleteDeviceByDvIds" parameterType="String">
+        delete from device where dv_id in
+        <foreach item="dvId" collection="array" open="(" separator="," close=")">
+            #{dvId}
+        </foreach>
+    </delete>
+
+</mapper>

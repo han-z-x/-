@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.lab.mapper.PurchaseRequestMapper">
+    
+    <resultMap type="PurchaseRequest" id="PurchaseRequestResult">
+        <result property="prId"    column="pr_id"    />
+        <result property="prTitle"    column="pr_title"    />
+        <result property="prNumber"    column="pr_number"    />
+        <result property="prReason"    column="pr_reason"    />
+        <result property="prRequester"    column="pr_requester"    />
+        <result property="prRequestDate"    column="pr_request_date"    />
+        <result property="prStatus"    column="pr_status"    />
+    </resultMap>
+
+    <sql id="selectPurchaseRequestVo">
+        select pr_id, pr_title, pr_number, pr_reason, pr_requester, pr_request_date, pr_status from purchase_request
+    </sql>
+
+    <select id="selectPurchaseRequestList" parameterType="PurchaseRequest" resultMap="PurchaseRequestResult">
+        <include refid="selectPurchaseRequestVo"/>
+        <where>  
+            <if test="prTitle != null  and prTitle != ''"> and pr_title = #{prTitle}</if>
+            <if test="prNumber != null "> and pr_number = #{prNumber}</if>
+            <if test="prReason != null  and prReason != ''"> and pr_reason = #{prReason}</if>
+            <if test="prRequester != null "> and pr_requester = #{prRequester}</if>
+            <if test="prRequestDate != null "> and pr_request_date = #{prRequestDate}</if>
+            <if test="prStatus != null "> and pr_status = #{prStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectPurchaseRequestByPrId" parameterType="Long" resultMap="PurchaseRequestResult">
+        <include refid="selectPurchaseRequestVo"/>
+        where pr_id = #{prId}
+    </select>
+        
+    <insert id="insertPurchaseRequest" parameterType="PurchaseRequest" useGeneratedKeys="true" keyProperty="prId">
+        insert into purchase_request
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="prTitle != null and prTitle != ''">pr_title,</if>
+            <if test="prNumber != null">pr_number,</if>
+            <if test="prReason != null and prReason != ''">pr_reason,</if>
+            <if test="prRequester != null">pr_requester,</if>
+            <if test="prRequestDate != null">pr_request_date,</if>
+            <if test="prStatus != null">pr_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="prTitle != null and prTitle != ''">#{prTitle},</if>
+            <if test="prNumber != null">#{prNumber},</if>
+            <if test="prReason != null and prReason != ''">#{prReason},</if>
+            <if test="prRequester != null">#{prRequester},</if>
+            <if test="prRequestDate != null">#{prRequestDate},</if>
+            <if test="prStatus != null">#{prStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePurchaseRequest" parameterType="PurchaseRequest">
+        update purchase_request
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="prTitle != null and prTitle != ''">pr_title = #{prTitle},</if>
+            <if test="prNumber != null">pr_number = #{prNumber},</if>
+            <if test="prReason != null and prReason != ''">pr_reason = #{prReason},</if>
+            <if test="prRequester != null">pr_requester = #{prRequester},</if>
+            <if test="prRequestDate != null">pr_request_date = #{prRequestDate},</if>
+            <if test="prStatus != null">pr_status = #{prStatus},</if>
+        </trim>
+        where pr_id = #{prId}
+    </update>
+
+    <delete id="deletePurchaseRequestByPrId" parameterType="Long">
+        delete from purchase_request where pr_id = #{prId}
+    </delete>
+
+    <delete id="deletePurchaseRequestByPrIds" parameterType="String">
+        delete from purchase_request where pr_id in 
+        <foreach item="prId" collection="array" open="(" separator="," close=")">
+            #{prId}
+        </foreach>
+    </delete>
+
+</mapper>

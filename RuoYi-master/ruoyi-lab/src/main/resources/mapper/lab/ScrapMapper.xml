@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.lab.mapper.ScrapMapper">
+    
+    <resultMap type="Scrap" id="ScrapResult">
+        <result property="scId"    column="sc_id"    />
+        <result property="scDevice"    column="sc_device"    />
+        <result property="scStatus"    column="sc_status"    />
+        <result property="scDate"    column="sc_date"    />
+    </resultMap>
+
+    <sql id="selectScrapVo">
+        select sc_id, sc_device, sc_status, sc_date from scrap
+    </sql>
+
+    <select id="selectScrapList" parameterType="Scrap" resultMap="ScrapResult">
+        <include refid="selectScrapVo"/>
+        <where>  
+            <if test="scDevice != null "> and sc_device = #{scDevice}</if>
+            <if test="scStatus != null "> and sc_status = #{scStatus}</if>
+            <if test="scDate != null "> and sc_date = #{scDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectScrapByScId" parameterType="Long" resultMap="ScrapResult">
+        <include refid="selectScrapVo"/>
+        where sc_id = #{scId}
+    </select>
+        
+    <insert id="insertScrap" parameterType="Scrap" useGeneratedKeys="true" keyProperty="scId">
+        insert into scrap
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="scDevice != null">sc_device,</if>
+            <if test="scStatus != null">sc_status,</if>
+            <if test="scDate != null">sc_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="scDevice != null">#{scDevice},</if>
+            <if test="scStatus != null">#{scStatus},</if>
+            <if test="scDate != null">#{scDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateScrap" parameterType="Scrap">
+        update scrap
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scDevice != null">sc_device = #{scDevice},</if>
+            <if test="scStatus != null">sc_status = #{scStatus},</if>
+            <if test="scDate != null">sc_date = #{scDate},</if>
+        </trim>
+        where sc_id = #{scId}
+    </update>
+
+    <delete id="deleteScrapByScId" parameterType="Long">
+        delete from scrap where sc_id = #{scId}
+    </delete>
+
+    <delete id="deleteScrapByScIds" parameterType="String">
+        delete from scrap where sc_id in 
+        <foreach item="scId" collection="array" open="(" separator="," close=")">
+            #{scId}
+        </foreach>
+    </delete>
+
+</mapper>

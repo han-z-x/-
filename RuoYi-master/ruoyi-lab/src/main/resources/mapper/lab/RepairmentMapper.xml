@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.lab.mapper.RepairmentMapper">
+
+    <resultMap type="Repairment" id="RepairmentResult">
+        <result property="rpId"    column="rp_id"    />
+        <result property="rpDevice"    column="rp_device"    />
+        <result property="rpLiablePerson"    column="rp_liable_person"    />
+        <result property="rpFactory"    column="rp_factory"    />
+        <result property="rpPrice"    column="rp_price"    />
+        <result property="rpStatus"    column="rp_status"    />
+        <result property="rpDate"    column="rp_date"    />
+<!--&lt;!&ndash;        resultMap构造器：result都写完了才能写association&ndash;&gt;-->
+<!--        <association property="rpDeviceInfo"    javaType="Device">-->
+<!--            <id property="rpDevice"    column="rp_device"  />-->
+<!--            <result property="dvTitle"    column="dv_title"    />-->
+<!--        </association>-->
+    </resultMap>
+
+    <sql id="selectRepairmentVo">
+        select rp_id, rp_device, rp_liable_person, rp_factory, rp_price, rp_status, rp_date from repairment
+    </sql>
+
+    <select id="selectRepairmentList" parameterType="Repairment" resultMap="RepairmentResult">
+        <include refid="selectRepairmentVo"/>
+        <where>
+            <if test="rpDevice != null "> and rp_device = #{rpDevice}</if>
+            <if test="rpLiablePerson != null "> and rp_liable_person = #{rpLiablePerson}</if>
+            <if test="rpFactory != null  and rpFactory != ''"> and rp_factory = #{rpFactory}</if>
+            <if test="rpPrice != null "> and rp_price = #{rpPrice}</if>
+            <if test="rpStatus != null "> and rp_status = #{rpStatus}</if>
+            <if test="rpDate != null "> and rp_date = #{rpDate}</if>
+        </where>
+    </select>
+
+    <select id="selectRepairmentByRpId" parameterType="Long" resultMap="RepairmentResult">
+        <include refid="selectRepairmentVo"/>
+        where rp_id = #{rpId}
+    </select>
+
+    <insert id="insertRepairment" parameterType="Repairment" useGeneratedKeys="true" keyProperty="rpId">
+        insert into repairment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="rpDevice != null">rp_device,</if>
+            <if test="rpLiablePerson != null">rp_liable_person,</if>
+            <if test="rpFactory != null and rpFactory != ''">rp_factory,</if>
+            <if test="rpPrice != null">rp_price,</if>
+            <if test="rpStatus != null">rp_status,</if>
+            <if test="rpDate != null">rp_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="rpDevice != null">#{rpDevice},</if>
+            <if test="rpLiablePerson != null">#{rpLiablePerson},</if>
+            <if test="rpFactory != null and rpFactory != ''">#{rpFactory},</if>
+            <if test="rpPrice != null">#{rpPrice},</if>
+            <if test="rpStatus != null">#{rpStatus},</if>
+            <if test="rpDate != null">#{rpDate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRepairment" parameterType="Repairment">
+        update repairment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="rpDevice != null">rp_device = #{rpDevice},</if>
+            <if test="rpLiablePerson != null">rp_liable_person = #{rpLiablePerson},</if>
+            <if test="rpFactory != null and rpFactory != ''">rp_factory = #{rpFactory},</if>
+            <if test="rpPrice != null">rp_price = #{rpPrice},</if>
+            <if test="rpStatus != null">rp_status = #{rpStatus},</if>
+            <if test="rpDate != null">rp_date = #{rpDate},</if>
+        </trim>
+        where rp_id = #{rpId}
+    </update>
+
+    <delete id="deleteRepairmentByRpId" parameterType="Long">
+        delete from repairment where rp_id = #{rpId}
+    </delete>
+
+    <delete id="deleteRepairmentByRpIds" parameterType="String">
+        delete from repairment where rp_id in
+        <foreach item="rpId" collection="array" open="(" separator="," close=")">
+            #{rpId}
+        </foreach>
+    </delete>
+
+</mapper>
